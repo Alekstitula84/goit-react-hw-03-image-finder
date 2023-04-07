@@ -1,42 +1,58 @@
-import React, { PureComponent } from 'react';
-import {
-    SearchbarHeader, Form, SearchFormButton, ButtonLabel, SearchFormInput
-} from './Searchbar.styled'
+import { Component } from 'react';
+import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export default class Searchbar extends PureComponent {
+import {
+    Input,
+    Label,
+    Searchbar as SearchbarWrapper,
+    SearchForm,
+    SearchFormButton,
+    Icon,
+} from './Searchbar.styled';
+
+class Searchbar extends Component {
     state = {
         inputValue: '',
-        isMoviesShown: false,
     };
 
-    submitHandler = event => {
-        event.preventDefault();
+    static propTypes = {
+        onSubmit: PropTypes.func.isRequired,
+    };
+
+    handleSubmit = e => {
+        e.preventDefault();
+        if (this.state.inputValue.trim() === '') {
+            return toast.error('Cannot read ');
+        }
         this.props.onSubmit(this.state.inputValue);
     };
 
-    onSearch = e => {
-        this.setState({ inputValue: e.currentTarget.value });
+    handleInputChange = e => {
+        this.setState({ inputValue: e.currentTarget.value.toLowerCase() });
     };
-
 
     render() {
         return (
-            <div>
-                <SearchbarHeader>
-                    <Form onSubmit={this.submitHandler}>
-                        <SearchFormButton type="submit" >
-                            <ButtonLabel>Search</ButtonLabel>
-                        </SearchFormButton>
-                        <SearchFormInput
-                            type="text"
-                            autocomplete="off"
-                            autofocus
-                            placeholder="Search images and photos"
-                            onChange={this.onSearch}
-                        />
-                    </Form>
-                </SearchbarHeader>
-            </div>
+            <SearchbarWrapper>
+                <SearchForm onSubmit={this.handleSubmit}>
+                    <SearchFormButton type="submit">
+                        <Label>Search</Label>
+                        <Icon size="24px" />
+                    </SearchFormButton>
+                    <Input
+                        type="text"
+                        name="searchQuery"
+                        autoComplete="off"
+                        autoFocus={true}
+                        placeholder="Search images and photos"
+                        onChange={this.handleInputChange}
+                    ></Input>
+                </SearchForm>
+            </SearchbarWrapper>
         );
     }
 }
+
+export default Searchbar;

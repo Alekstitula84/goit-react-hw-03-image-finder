@@ -38,8 +38,9 @@ export class App extends Component {
       if (response.hits.length === 0) {
         return toast.error('No pictures');
       }
+      const images = response.hits.map(({ largeImageUrl, webformatURL, name, id }) => ({ largeImageUrl, webformatURL, name, id }));
       this.setState(prevState => ({
-        images: [...prevState.images, ...response.hits],
+        images: [...prevState.images, ...images],
       }));
       this.setState({ total: response.totalHits });
     } catch (error) {
